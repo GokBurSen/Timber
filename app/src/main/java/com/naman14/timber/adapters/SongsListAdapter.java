@@ -55,15 +55,18 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
     private int lastPosition = -1;
     private String ateKey;
     private long playlistId;
-    private ItemHolder beforeItemHolder = null;
+    private RecyclerView recyclerView;
+    private float lastScrollYPosition;
 
-    public SongsListAdapter(AppCompatActivity context, List<Song> arraylist, boolean isPlaylistSong, boolean animate) {
+    public SongsListAdapter(AppCompatActivity context, List<Song> arraylist, boolean isPlaylistSong, boolean animate, RecyclerView rv) {
         this.arraylist = arraylist;
         this.mContext = context;
         this.isPlaylist = isPlaylistSong;
         this.songIDs = getSongIds();
         this.ateKey = Helpers.getATEKey(context);
         this.animate = animate;
+        recyclerView= rv;
+        lastScrollYPosition=0;
     }
 
     @Override
@@ -81,7 +84,6 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
 
     @Override
     public void onBindViewHolder(ItemHolder itemHolder, int i) {
-        beforeItemHolder=itemHolder;
         Song localItem = arraylist.get(i);
 
         itemHolder.title.setText(localItem.title);
@@ -102,6 +104,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
             itemHolder.visualizer.setVisibility(View.GONE);
         }
 
+
         if (animate && isPlaylist && PreferencesUtility.getInstance(mContext).getAnimations()) {
             if (TimberUtils.isLollipop())
                 setAnimation(itemHolder.itemView, i);
@@ -112,6 +115,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
         }
 
         setOnPopupMenuListener(itemHolder, i);
+        lastScrollYPosition=itemHolder.getAdapterPosition();
     }
 
     public void setPlaylistId(long playlistId) {
@@ -238,17 +242,15 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    lastScrollYPosition=recyclerView.getChildAdapterPosition(recyclerView.getChildAt(0));
                     MusicPlayer.playAll(mContext, songIDs, getAdapterPosition(), -1, TimberUtils.IdType.NA, false);
                     Handler handler1 = new Handler();
                     handler1.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            notifyItemChanged(currentlyPlayingPosition);
-                            notifyItemChanged(getAdapterPosition());
-
-                            if (isPlaylist && beforeItemHolder!=null) {
-                                beforeItemHolder.title.setTextColor(Color.WHITE);
-                                beforeItemHolder.visualizer.setVisibility(View.GONE);
+                            if (recyclerView!=null) {
+                                recyclerView.setAdapter(SongsListAdapter.this);
+                                recyclerView.scrollToPosition((int)lastScrollYPosition);
                             }
                         }
                     }, 50);

@@ -175,6 +175,9 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
                                 long[] deleteIds = {arraylist.get(position).id};
                                 TimberUtils.showDeleteDialog(mContext,arraylist.get(position).title, deleteIds, SongsListAdapter.this, position);
                                 break;
+                            case R.id.popup_song_delete_from_queue:
+                                MusicPlayer.deleteFromQueue(arraylist.get(position).id);
+                                break;
                         }
                         return false;
                     }
@@ -246,7 +249,6 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
                 public void run() {
                     if (recyclerView!=null)
                         lastScrollYPosition=recyclerView.getChildAdapterPosition(recyclerView.getChildAt(0));
-
                     MusicPlayer.playAll(mContext, songIDs, getAdapterPosition(), -1, TimberUtils.IdType.NA, false);
                     Handler handler1 = new Handler();
                     handler1.postDelayed(new Runnable() {
@@ -282,5 +284,3 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
         arraylist.remove(i);
     }
 }
-
-

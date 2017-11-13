@@ -15,6 +15,7 @@
 
 package com.naman14.timber.activities;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -92,6 +93,7 @@ public class BaseActivity extends ATEActivity implements ServiceConnection, Musi
     @Override
     protected void onStop() {
         super.onStop();
+        MusicService.mNotifyMode=0;
 
 
     }
@@ -117,6 +119,8 @@ public class BaseActivity extends ATEActivity implements ServiceConnection, Musi
 
     @Override
     protected void onDestroy() {
+        MusicService.mNotifyMode=0;
+
         super.onDestroy();
         // Unbind from the service
         if (mToken != null) {
@@ -210,8 +214,12 @@ public class BaseActivity extends ATEActivity implements ServiceConnection, Musi
                 NavigationUtils.navigateToSearch(this);
                 return true;
             case R.id.action_equalizer:
-                NavigationUtils.navigateToEqualizer(this);
+               NavigationUtils.navigateToEqualizer(this);
                 return true;
+            case R.id.action_Delete_all_Queue:
+                MusicPlayer.clearQueue();
+                return true;
+
 
         }
         return super.onOptionsItemSelected(item);
@@ -279,8 +287,7 @@ public class BaseActivity extends ATEActivity implements ServiceConnection, Musi
                 } else if (action.equals(MusicService.PLAYLIST_CHANGED)) {
                     baseActivity.onPlaylistChanged();
                 } else if (action.equals(MusicService.TRACK_ERROR)) {
-                    final String errorMsg = context.getString(R.string.error_playing_track,
-                            intent.getStringExtra(MusicService.TrackErrorExtra.TRACK_NAME));
+                    final String errorMsg = context.getString(R.string.error_playing_track, intent.getStringExtra(MusicService.TrackErrorExtra.TRACK_NAME));
                     Toast.makeText(baseActivity, errorMsg, Toast.LENGTH_SHORT).show();
                 }
             }

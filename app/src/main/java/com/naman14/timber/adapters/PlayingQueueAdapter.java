@@ -109,11 +109,17 @@ public class PlayingQueueAdapter extends RecyclerView.Adapter<PlayingQueueAdapte
                                 long[] deleteIds = {arraylist.get(position).id};
                                 TimberUtils.showDeleteDialog(mContext,arraylist.get(position).title, deleteIds, PlayingQueueAdapter.this,position);
                                 break;
+                            case R.id.popup_song_delete_from_queue:
+
+                                MusicPlayer.deleteFromQueue(arraylist.get(position).id, PlayingQueueAdapter.this, position);
+
+                                break;
                         }
                         return false;
                     }
                 });
                 menu.inflate(R.menu.popup_playing_queue);
+
                 menu.show();
             }
         });

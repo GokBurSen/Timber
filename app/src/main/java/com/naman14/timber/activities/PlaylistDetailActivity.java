@@ -36,6 +36,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
@@ -108,6 +109,7 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_detail);
 
+        Toast.makeText(mContext, "", Toast.LENGTH_SHORT).show();
         action = getIntent().getAction();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -36,13 +36,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.afollestad.appthemeengine.customizers.ATEToolbarCustomizer;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.naman14.timber.MusicService;
 import com.naman14.timber.R;
 import com.naman14.timber.adapters.SongsListAdapter;
 import com.naman14.timber.dataloaders.LastAddedLoader;
@@ -108,7 +108,6 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_detail);
 
-        Toast.makeText(mContext, "", Toast.LENGTH_SHORT).show();
         action = getIntent().getAction();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -137,7 +136,11 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
         } else {
             setUpSongs();
         }
+        MusicService.playlistDetailActivity=PlaylistDetailActivity.this;
+    }
 
+    public void updateAdapter() {
+        recyclerView.setAdapter(mAdapter);
     }
 
     private void setAlbumart() {
@@ -329,6 +332,9 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
                 return true;
             case R.id.action_delete_playlist:
                 showDeletePlaylistDialog();
+                break;
+            case R.id.action_shuffle:
+                clearAutoPlaylists();
                 break;
             case R.id.action_clear_auto_playlist:
                 clearAutoPlaylists();

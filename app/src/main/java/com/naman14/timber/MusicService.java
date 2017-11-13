@@ -64,7 +64,9 @@ import android.support.v7.app.NotificationCompat;
 import android.support.v7.graphics.Palette;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.naman14.timber.activities.PlaylistDetailActivity;
 import com.naman14.timber.helpers.MediaButtonIntentReceiver;
 import com.naman14.timber.helpers.MusicPlaybackTrack;
 import com.naman14.timber.lastfmapi.LastFmClient;
@@ -239,12 +241,13 @@ public class MusicService extends Service {
         public void onReceive(final Context context, final Intent intent) {
             final String command = intent.getStringExtra(CMDNAME);
 
-
             handleCommandIntent(intent);
 
         }
     };
     private ContentObserver mMediaStoreObserver;
+
+    public static PlaylistDetailActivity playlistDetailActivity;
 
     @Override
     public IBinder onBind(final Intent intent) {
@@ -441,7 +444,6 @@ public class MusicService extends Service {
         audioEffectsIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
         sendBroadcast(audioEffectsIntent);
 
-
         mAlarmManager.cancel(mShutdownIntent);
 
         mPlayerHandler.removeCallbacksAndMessages(null);
@@ -492,7 +494,6 @@ public class MusicService extends Service {
         if (intent != null && intent.getBooleanExtra(FROM_MEDIA_BUTTON, false)) {
             MediaButtonIntentReceiver.completeWakefulIntent(intent);
         }
-
         return START_NOT_STICKY; //no sense to use START_STICKY with using startForeground
     }
 
@@ -544,8 +545,10 @@ public class MusicService extends Service {
             if (isPlaying()) {
                 pause();
                 mPausedByTransientLossOfFocus = false;
+                // BURAYI DUZELTECEGİM.
             } else {
                 play();
+                // BURAYI DUZELTECEGİM.
             }
         } else if (CMDPAUSE.equals(command) || PAUSE_ACTION.equals(action)) {
             pause();
@@ -610,6 +613,10 @@ public class MusicService extends Service {
         }
 
         mNotifyMode = newNotifyMode;
+
+        Toast.makeText(getApplicationContext(), MusicService.playlistDetailActivity + " hmmmm", Toast.LENGTH_SHORT).show();
+        if (MusicService.playlistDetailActivity!=null)
+            MusicService.playlistDetailActivity.updateAdapter();
     }
 
     private void cancelNotification() {
@@ -1282,6 +1289,7 @@ public class MusicService extends Service {
         if (mActivateXTrackSelector) {
             addXTrackSelector(n);
         }
+
 
         return n;
     }

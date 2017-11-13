@@ -27,9 +27,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.appthemeengine.Config;
 import com.naman14.timber.MusicPlayer;
+import com.naman14.timber.MusicService;
 import com.naman14.timber.R;
 import com.naman14.timber.dialogs.AddPlaylistDialog;
 import com.naman14.timber.models.Song;
@@ -245,7 +247,8 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    lastScrollYPosition=recyclerView.getChildAdapterPosition(recyclerView.getChildAt(0));
+                    if (recyclerView!=null)
+                        lastScrollYPosition=recyclerView.getChildAdapterPosition(recyclerView.getChildAt(0));
                     MusicPlayer.playAll(mContext, songIDs, getAdapterPosition(), -1, TimberUtils.IdType.NA, false);
                     Handler handler1 = new Handler();
                     handler1.postDelayed(new Runnable() {
@@ -255,6 +258,12 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
                                 recyclerView.setAdapter(SongsListAdapter.this);
                                 recyclerView.scrollToPosition((int)lastScrollYPosition);
                             }
+                            else {
+                                notifyItemChanged(currentlyPlayingPosition);
+                                notifyItemChanged(getAdapterPosition());
+                            }
+
+                            Toast.makeText(mContext, MusicService.playlistDetailActivity+"", Toast.LENGTH_SHORT).show();
                         }
                     }, 50);
                 }
@@ -275,5 +284,3 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
         arraylist.remove(i);
     }
 }
-
-

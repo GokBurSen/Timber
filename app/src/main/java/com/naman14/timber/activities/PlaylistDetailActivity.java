@@ -43,6 +43,7 @@ import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.afollestad.appthemeengine.customizers.ATEToolbarCustomizer;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.naman14.timber.MusicService;
 import com.naman14.timber.R;
 import com.naman14.timber.adapters.SongsListAdapter;
 import com.naman14.timber.dataloaders.LastAddedLoader;
@@ -137,7 +138,11 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
         } else {
             setUpSongs();
         }
+        MusicService.playlistDetailActivity=PlaylistDetailActivity.this;
+    }
 
+    public void updateAdapter() {
+        recyclerView.setAdapter(mAdapter);
     }
 
     private void setAlbumart() {
@@ -329,6 +334,9 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
                 return true;
             case R.id.action_delete_playlist:
                 showDeletePlaylistDialog();
+                break;
+            case R.id.action_shuffle:
+                clearAutoPlaylists();
                 break;
             case R.id.action_clear_auto_playlist:
                 clearAutoPlaylists();

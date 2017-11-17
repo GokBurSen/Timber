@@ -17,6 +17,7 @@ package com.naman14.timber.adapters;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -27,11 +28,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.appthemeengine.Config;
 import com.naman14.timber.MusicPlayer;
-import com.naman14.timber.MusicService;
 import com.naman14.timber.R;
 import com.naman14.timber.dialogs.AddPlaylistDialog;
 import com.naman14.timber.models.Song;
@@ -58,7 +57,6 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
     private String ateKey;
     private long playlistId;
     private RecyclerView recyclerView;
-    private float lastScrollYPosition;
 
     public SongsListAdapter(AppCompatActivity context, List<Song> arraylist, boolean isPlaylistSong, boolean animate, RecyclerView rv) {
         this.arraylist = arraylist;
@@ -68,7 +66,6 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
         this.ateKey = Helpers.getATEKey(context);
         this.animate = animate;
         recyclerView= rv;
-        lastScrollYPosition=0;
     }
 
     @Override
@@ -117,7 +114,6 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
         }
 
         setOnPopupMenuListener(itemHolder, i);
-        lastScrollYPosition=itemHolder.getAdapterPosition();
     }
 
     public void setPlaylistId(long playlistId) {
@@ -244,30 +240,26 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (recyclerView!=null)
-                        lastScrollYPosition=recyclerView.getChildAdapterPosition(recyclerView.getChildAt(0));
-
                     MusicPlayer.playAll(mContext, songIDs, getAdapterPosition(), -1, TimberUtils.IdType.NA, false);
                     Handler handler1 = new Handler();
                     handler1.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             if (recyclerView!=null) {
+                                int offset = recyclerView.computeVerticalScrollOffset();
                                 recyclerView.setAdapter(SongsListAdapter.this);
-                                recyclerView.scrollToPosition((int)lastScrollYPosition);
+                                LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
+                                llm.scrollToPositionWithOffset(0,-1*offset);
                             }
                             else {
                                 notifyItemChanged(currentlyPlayingPosition);
                                 notifyItemChanged(getAdapterPosition());
                             }
-
-                            Toast.makeText(mContext, MusicService.playlistDetailActivity+"", Toast.LENGTH_SHORT).show();
                         }
-                    }, 50);
+                    }, 150);
                 }
-            }, 100);
+            }, 150);
         }
-
     }
 
     public Song getSongAt(int i) {

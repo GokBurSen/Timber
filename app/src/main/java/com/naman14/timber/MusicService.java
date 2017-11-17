@@ -64,9 +64,7 @@ import android.support.v7.app.NotificationCompat;
 import android.support.v7.graphics.Palette;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.naman14.timber.activities.PlaylistDetailActivity;
 import com.naman14.timber.helpers.MediaButtonIntentReceiver;
 import com.naman14.timber.helpers.MusicPlaybackTrack;
 import com.naman14.timber.lastfmapi.LastFmClient;
@@ -127,6 +125,7 @@ public class MusicService extends Service {
     public static final String CMDNEXT = "next";
     public static final String CMDNOTIF = "buttonId";
     public static final String UPDATE_PREFERENCES = "updatepreferences";
+    public static final String REFRESH_ADAPTER = "refreshadapter";
     public static final int NEXT = 2;
     public static final int LAST = 3;
     public static final int SHUFFLE_NONE = 0;
@@ -247,8 +246,6 @@ public class MusicService extends Service {
     };
     private ContentObserver mMediaStoreObserver;
 
-    public static PlaylistDetailActivity playlistDetailActivity;
-
     @Override
     public IBinder onBind(final Intent intent) {
         if (D) Log.d(TAG, "Service bound, intent = " + intent);
@@ -288,7 +285,6 @@ public class MusicService extends Service {
         super.onCreate();
 
         mNotificationManager = NotificationManagerCompat.from(this);
-
         // gets a pointer to the playback state store
         mPlaybackStateStore = MusicPlaybackState.getInstance(this);
         mSongPlayCount = SongPlayCount.getInstance(this);
@@ -538,18 +534,28 @@ public class MusicService extends Service {
 
         if (CMDNEXT.equals(command) || NEXT_ACTION.equals(action)) {
             gotoNext(true);
+
+            Intent myIntent = new Intent("android.intent.action.MAIN");
+            myIntent.putExtra(REFRESH_ADAPTER, "UpdateAndMove");
+            this.sendBroadcast(myIntent);
         } else if (CMDPREVIOUS.equals(command) || PREVIOUS_ACTION.equals(action)
                 || PREVIOUS_FORCE_ACTION.equals(action)) {
             prev(PREVIOUS_FORCE_ACTION.equals(action));
+
+            Intent myIntent = new Intent("android.intent.action.MAIN");
+            myIntent.putExtra(REFRESH_ADAPTER, "UpdateAndMove");
+            this.sendBroadcast(myIntent);
         } else if (CMDTOGGLEPAUSE.equals(command) || TOGGLEPAUSE_ACTION.equals(action)) {
             if (isPlaying()) {
                 pause();
                 mPausedByTransientLossOfFocus = false;
-                // BURAYI DUZELTECEGİM.
             } else {
                 play();
-                // BURAYI DUZELTECEGİM.
             }
+
+            Intent myIntent = new Intent("android.intent.action.MAIN");
+            myIntent.putExtra(REFRESH_ADAPTER, "Update");
+            this.sendBroadcast(myIntent);
         } else if (CMDPAUSE.equals(command) || PAUSE_ACTION.equals(action)) {
             pause();
             mPausedByTransientLossOfFocus = false;
@@ -613,10 +619,6 @@ public class MusicService extends Service {
         }
 
         mNotifyMode = newNotifyMode;
-
-        Toast.makeText(getApplicationContext(), MusicService.playlistDetailActivity + " hmmmm", Toast.LENGTH_SHORT).show();
-        if (MusicService.playlistDetailActivity!=null)
-            MusicService.playlistDetailActivity.updateAdapter();
     }
 
     private void cancelNotification() {

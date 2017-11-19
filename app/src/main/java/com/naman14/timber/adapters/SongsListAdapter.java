@@ -139,6 +139,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
                             case R.id.popup_song_remove_playlist:
                                 TimberUtils.removeFromPlaylist(mContext, arraylist.get(position).id, playlistId);
                                 removeSongAt(position);
+                                updateDataSet(arraylist);
                                 notifyItemRemoved(position);
                                 break;
                             case R.id.popup_song_play:
@@ -170,6 +171,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
                                 long[] deleteIds = {arraylist.get(position).id};
                                 TimberUtils.showDeleteDialog(mContext,arraylist.get(position).title, deleteIds, SongsListAdapter.this, position);
                                 removeSongAt(position);
+                                updateDataSet(arraylist);
                                 break;
                         }
                         return false;
@@ -265,6 +267,10 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
 
     public void removeSongAt(int i) {
         arraylist.remove(i);
+
+
+       // arraylist.set(i, arraylist.get(i-1));
+
     }
 }
 

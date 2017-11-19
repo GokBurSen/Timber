@@ -267,10 +267,6 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
 
     public void removeSongAt(int i) {
         arraylist.remove(i);
-
-
-       // arraylist.set(i, arraylist.get(i-1));
-
     }
 }
 

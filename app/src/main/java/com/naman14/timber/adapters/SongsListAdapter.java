@@ -173,6 +173,10 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
                                 removeSongAt(position);
                                 updateDataSet(arraylist);
                                 break;
+                            case R.id.popup_song_delete_all:
+
+                                    TimberUtils.deleteAll(mContext,arraylist);
+                                break;
                         }
                         return false;
                     }

@@ -38,4 +38,9 @@
         android:id="@+id/popup_song_delete"
         android:title="Delete from device" />
 
+
+    <item
+        android:id="@+id/popup_song_delete_all"
+        android:title="Delete all" />
+
 </menu>

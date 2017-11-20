@@ -38,10 +38,12 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.naman14.timber.MusicPlayer;
 import com.naman14.timber.R;
+import com.naman14.timber.models.Song;
 import com.naman14.timber.provider.RecentStore;
 import com.naman14.timber.provider.SongPlayCount;
 
 import java.io.File;
+import java.util.List;
 
 public class TimberUtils {
 
@@ -245,6 +247,16 @@ public class TimberUtils {
 
 
     }
+
+
+    public static void deleteAll(final Context context, final List<Song> arraylist){
+        while(arraylist.get(0)!=null) {
+            long[] deleteId_ = {arraylist.remove(0).id};
+            TimberUtils.deleteTracks(context, deleteId_);
+        }
+    }
+
+
     public static void deleteTracks(final Context context, final long[] list) {
         final String[] projection = new String[]{
                 BaseColumns._ID, MediaStore.MediaColumns.DATA, MediaStore.Audio.AudioColumns.ALBUM_ID
@@ -269,8 +281,11 @@ public class TimberUtils {
                 // Remove from current playlist
                 final long id = c.getLong(0);
                 MusicPlayer.removeTrack(id);
+
+
                 // Remove the track from the play count
                 SongPlayCount.getInstance(context).removeItem(id);
+
                 // Remove any items in the recents database
                 RecentStore.getInstance(context).removeItem(id);
                 c.moveToNext();
@@ -305,6 +320,12 @@ public class TimberUtils {
         context.getContentResolver().notifyChange(Uri.parse("content://media"), null);
         MusicPlayer.refresh();
     }
+
+
+
+
+
+
 
     public static void shareTrack(final Context context, long id) {
 

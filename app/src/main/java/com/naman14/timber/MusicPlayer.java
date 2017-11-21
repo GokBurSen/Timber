@@ -672,6 +672,7 @@ public class MusicPlayer {
             return;
         } try{
                 mService.removeTrack(sourceId);
+
         } catch (final RemoteException ignored) {
         }
 

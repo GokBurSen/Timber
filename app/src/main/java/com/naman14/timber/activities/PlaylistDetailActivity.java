@@ -36,7 +36,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
@@ -95,7 +94,7 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
     };
     private AppCompatActivity mContext = PlaylistDetailActivity.this;
     private SongsListAdapter mAdapter;
-    public RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private ImageView blurFrame;
     private TextView playlistname;
     private View foreground;
@@ -108,7 +107,6 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_detail);
 
-        Toast.makeText(mContext, "", Toast.LENGTH_SHORT).show();
         action = getIntent().getAction();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -210,7 +208,7 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
         @Override
         protected String doInBackground(String... params) {
             List<Song> lastadded = LastAddedLoader.getLastAddedSongs(mContext);
-            mAdapter = new SongsListAdapter(mContext, lastadded, true, animate, recyclerView);
+            mAdapter = new SongsListAdapter(mContext, lastadded, true, animate);
             mAdapter.setPlaylistId(playlistID);
             return "Executed";
         }
@@ -231,7 +229,7 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
         protected String doInBackground(String... params) {
             TopTracksLoader loader = new TopTracksLoader(mContext, TopTracksLoader.QueryType.RecentSongs);
             List<Song> recentsongs = SongLoader.getSongsForCursor(TopTracksLoader.getCursor());
-            mAdapter = new SongsListAdapter(mContext, recentsongs, true, animate, recyclerView);
+            mAdapter = new SongsListAdapter(mContext, recentsongs, true, animate);
             mAdapter.setPlaylistId(playlistID);
             return "Executed";
         }
@@ -253,7 +251,7 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
         protected String doInBackground(String... params) {
             TopTracksLoader loader = new TopTracksLoader(mContext, TopTracksLoader.QueryType.TopTracks);
             List<Song> toptracks = SongLoader.getSongsForCursor(TopTracksLoader.getCursor());
-            mAdapter = new SongsListAdapter(mContext, toptracks, true, animate, recyclerView);
+            mAdapter = new SongsListAdapter(mContext, toptracks, true, animate);
             mAdapter.setPlaylistId(playlistID);
             return "Executed";
         }
@@ -274,7 +272,7 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
         protected String doInBackground(String... params) {
             playlistID = getIntent().getExtras().getLong(Constants.PLAYLIST_ID);
             List<Song> playlistsongs = PlaylistSongLoader.getSongsInPlaylist(mContext, playlistID);
-            mAdapter = new SongsListAdapter(mContext, playlistsongs, true, animate, recyclerView);
+            mAdapter = new SongsListAdapter(mContext, playlistsongs, true, animate);
             mAdapter.setPlaylistId(playlistID);
             return "Executed";
         }

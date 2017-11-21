@@ -55,18 +55,14 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
     private int lastPosition = -1;
     private String ateKey;
     private long playlistId;
-    private RecyclerView recyclerView;
-    private float lastScrollYPosition;
 
-    public SongsListAdapter(AppCompatActivity context, List<Song> arraylist, boolean isPlaylistSong, boolean animate, RecyclerView rv) {
+    public SongsListAdapter(AppCompatActivity context, List<Song> arraylist, boolean isPlaylistSong, boolean animate) {
         this.arraylist = arraylist;
         this.mContext = context;
         this.isPlaylist = isPlaylistSong;
         this.songIDs = getSongIds();
         this.ateKey = Helpers.getATEKey(context);
         this.animate = animate;
-        recyclerView= rv;
-        lastScrollYPosition=0;
     }
 
     @Override
@@ -114,8 +110,9 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
             }
         }
 
+
         setOnPopupMenuListener(itemHolder, i);
-        lastScrollYPosition=itemHolder.getAdapterPosition();
+
     }
 
     public void setPlaylistId(long playlistId) {
@@ -173,9 +170,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
                                 long[] deleteIds = {arraylist.get(position).id};
                                 TimberUtils.showDeleteDialog(mContext,arraylist.get(position).title, deleteIds, SongsListAdapter.this, position);
                                 break;
-                            case R.id.popup_song_delete_from_queue:
-                                MusicPlayer.deleteFromQueue(arraylist.get(position).id);
-                                break;
+
                         }
                         return false;
                     }
@@ -235,30 +230,27 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
             this.popupMenu = (ImageView) view.findViewById(R.id.popup_menu);
             visualizer = (MusicVisualizer) view.findViewById(R.id.visualizer);
             view.setOnClickListener(this);
-
         }
 
         @Override
         public void onClick(View v) {
-
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    lastScrollYPosition=recyclerView.getChildAdapterPosition(recyclerView.getChildAt(0));
                     MusicPlayer.playAll(mContext, songIDs, getAdapterPosition(), -1, TimberUtils.IdType.NA, false);
                     Handler handler1 = new Handler();
                     handler1.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if (recyclerView!=null) {
-                                recyclerView.setAdapter(SongsListAdapter.this);
-                                recyclerView.scrollToPosition((int)lastScrollYPosition);
-                            }
+                            notifyItemChanged(currentlyPlayingPosition);
+                            notifyItemChanged(getAdapterPosition());
                         }
                     }, 50);
                 }
             }, 100);
+
+
         }
 
     }

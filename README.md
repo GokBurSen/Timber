@@ -62,5 +62,3 @@ namandwivedi14@gmail.com
 Göksun Önal
 
 Burak Kuyucu
-
-Sena Selışık

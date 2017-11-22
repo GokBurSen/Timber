@@ -45,6 +45,7 @@ import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.afollestad.appthemeengine.customizers.ATEToolbarCustomizer;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.naman14.timber.MusicPlayer;
 import com.naman14.timber.R;
 import com.naman14.timber.adapters.SongsListAdapter;
 import com.naman14.timber.dataloaders.LastAddedLoader;
@@ -64,6 +65,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.HashMap;
 import java.util.List;
+
+import static com.naman14.timber.MusicService.REFRESH_ADAPTER;
 
 public class PlaylistDetailActivity extends BaseActivity implements ATEActivityThemeCustomizer, ATEToolbarCustomizer {
 
@@ -149,15 +152,16 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
                 LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
                 llm.scrollToPositionWithOffset(0,-1*offset);
 
-                /*if (intent.getStringExtra(REFRESH_ADAPTER).equals("UpdateAndMove")) {
+                if (intent.getStringExtra(REFRESH_ADAPTER).equals("UpdateAndMove")) {
                     for (int i = 0; i < mAdapter.getItemCount(); i++) {
                         if (mAdapter.getSongAt(i).id == MusicPlayer.getCurrentAudioId())
                             llm.scrollToPositionWithOffset(i, 250);
                     }
-                }*/
+                }
             }
         };
         this.registerReceiver(broadcastReceiver, intentFilter);
+
     }
 
     public void updateAdapter() {

@@ -64,7 +64,9 @@ import android.support.v7.app.NotificationCompat;
 import android.support.v7.graphics.Palette;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.naman14.timber.activities.PlaylistDetailActivity;
 import com.naman14.timber.helpers.MediaButtonIntentReceiver;
 import com.naman14.timber.helpers.MusicPlaybackTrack;
 import com.naman14.timber.lastfmapi.LastFmClient;
@@ -188,7 +190,7 @@ public class MusicService extends Service {
     private boolean mServiceInUse = false;
     private boolean mIsSupposedToBePlaying = false;
     private long mLastPlayedTime;
-    private int mNotifyMode = NOTIFY_MODE_NONE;
+    public static int mNotifyMode = NOTIFY_MODE_NONE;///
     private long mNotificationPostTime = 0;
     private boolean mQueueIsSaveable = true;
     private boolean mPausedByTransientLossOfFocus = false;
@@ -245,6 +247,8 @@ public class MusicService extends Service {
         }
     };
     private ContentObserver mMediaStoreObserver;
+
+    public static PlaylistDetailActivity playlistDetailActivity;
 
     @Override
     public IBinder onBind(final Intent intent) {
@@ -424,7 +428,11 @@ public class MusicService extends Service {
         });
         mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
     }
-
+    @Override
+    public void onTaskRemoved(Intent rootIntent){
+        super.onTaskRemoved(rootIntent);
+        cancelNotification();
+    }
     @Override
     public void onDestroy() {
         if (D) Log.d(TAG, "Destroying service");
@@ -549,8 +557,10 @@ public class MusicService extends Service {
             if (isPlaying()) {
                 pause();
                 mPausedByTransientLossOfFocus = false;
+                // BURAYI DUZELTECEGİM.
             } else {
                 play();
+                // BURAYI DUZELTECEGİM.
             }
 
             Intent myIntent = new Intent("android.intent.action.MAIN");
@@ -619,6 +629,10 @@ public class MusicService extends Service {
         }
 
         mNotifyMode = newNotifyMode;
+
+        Toast.makeText(getApplicationContext(), MusicService.playlistDetailActivity + " hmmmm", Toast.LENGTH_SHORT).show();
+        if (MusicService.playlistDetailActivity!=null)
+            MusicService.playlistDetailActivity.updateAdapter();
     }
 
     private void cancelNotification() {
@@ -2177,12 +2191,12 @@ public class MusicService extends Service {
                 notifyChange(QUEUE_CHANGED);
             }
 
-            if (mPlayPos < 0) {
-                mPlayPos = 0;
-                openCurrentAndNext();
-                play();
-                notifyChange(META_CHANGED);
-            }
+         //   if (mPlayPos < 0) {
+          //      mPlayPos = 0;
+              //  openCurrentAndNext();
+               // play();
+             //   notifyChange(META_CHANGED);
+          //  }
         }
     }
 

@@ -39,6 +39,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
@@ -46,6 +47,7 @@ import com.afollestad.appthemeengine.customizers.ATEToolbarCustomizer;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.naman14.timber.MusicPlayer;
+import com.naman14.timber.MusicService;
 import com.naman14.timber.R;
 import com.naman14.timber.adapters.SongsListAdapter;
 import com.naman14.timber.dataloaders.LastAddedLoader;
@@ -114,6 +116,7 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_detail);
 
+        Toast.makeText(mContext, "", Toast.LENGTH_SHORT).show();
         action = getIntent().getAction();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -142,6 +145,8 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
         } else {
             setUpSongs();
         }
+        MusicService.playlistDetailActivity=PlaylistDetailActivity.this;
+    }
 
         IntentFilter intentFilter = new IntentFilter("android.intent.action.MAIN");
         broadcastReceiver = new BroadcastReceiver() {

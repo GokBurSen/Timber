@@ -17,6 +17,7 @@ package com.naman14.timber.adapters;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -68,7 +69,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
         this.ateKey = Helpers.getATEKey(context);
         this.animate = animate;
         recyclerView= rv;
-        lastScrollYPosition=0;
+        lastScrollYPosition=0
     }
 
     @Override
@@ -255,8 +256,10 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
                         @Override
                         public void run() {
                             if (recyclerView!=null) {
+                                int offset = recyclerView.computeVerticalScrollOffset();
                                 recyclerView.setAdapter(SongsListAdapter.this);
-                                recyclerView.scrollToPosition((int)lastScrollYPosition);
+                                LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
+                                llm.scrollToPositionWithOffset(0,-1*offset);
                             }
                             else {
                                 notifyItemChanged(currentlyPlayingPosition);
@@ -265,11 +268,10 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
 
                             Toast.makeText(mContext, MusicService.playlistDetailActivity+"", Toast.LENGTH_SHORT).show();
                         }
-                    }, 50);
+                    }, 150);
                 }
-            }, 100);
+            }, 150);
         }
-
     }
 
     public Song getSongAt(int i) {

@@ -16,7 +16,10 @@ package com.naman14.timber.activities;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,6 +46,7 @@ import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.afollestad.appthemeengine.customizers.ATEToolbarCustomizer;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.naman14.timber.MusicPlayer;
 import com.naman14.timber.MusicService;
 import com.naman14.timber.R;
 import com.naman14.timber.adapters.SongsListAdapter;
@@ -63,6 +67,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.HashMap;
 import java.util.List;
+
+import static com.naman14.timber.MusicService.REFRESH_ADAPTER;
 
 public class PlaylistDetailActivity extends BaseActivity implements ATEActivityThemeCustomizer, ATEToolbarCustomizer {
 
@@ -101,6 +107,7 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
     private TextView playlistname;
     private View foreground;
     private boolean animate;
+    private BroadcastReceiver broadcastReceiver;
 
     @TargetApi(21)
     @Override
@@ -139,6 +146,27 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
             setUpSongs();
         }
         MusicService.playlistDetailActivity=PlaylistDetailActivity.this;
+    }
+
+        IntentFilter intentFilter = new IntentFilter("android.intent.action.MAIN");
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int offset = recyclerView.computeVerticalScrollOffset();
+                recyclerView.setAdapter(mAdapter);
+                LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
+                llm.scrollToPositionWithOffset(0,-1*offset);
+
+                if (intent.getStringExtra(REFRESH_ADAPTER).equals("UpdateAndMove")) {
+                    for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                        if (mAdapter.getSongAt(i).id == MusicPlayer.getCurrentAudioId())
+                            llm.scrollToPositionWithOffset(i, 250);
+                    }
+                }
+            }
+        };
+        this.registerReceiver(broadcastReceiver, intentFilter);
+
     }
 
     public void updateAdapter() {

@@ -127,6 +127,7 @@ public class MusicService extends Service {
     public static final String CMDNEXT = "next";
     public static final String CMDNOTIF = "buttonId";
     public static final String UPDATE_PREFERENCES = "updatepreferences";
+    public static final String REFRESH_ADAPTER = "refreshadapter";
     public static final int NEXT = 2;
     public static final int LAST = 3;
     public static final int SHUFFLE_NONE = 0;
@@ -288,7 +289,6 @@ public class MusicService extends Service {
         super.onCreate();
 
         mNotificationManager = NotificationManagerCompat.from(this);
-
         // gets a pointer to the playback state store
         mPlaybackStateStore = MusicPlaybackState.getInstance(this);
         mSongPlayCount = SongPlayCount.getInstance(this);
@@ -542,9 +542,17 @@ public class MusicService extends Service {
 
         if (CMDNEXT.equals(command) || NEXT_ACTION.equals(action)) {
             gotoNext(true);
+
+            Intent myIntent = new Intent("android.intent.action.MAIN");
+            myIntent.putExtra(REFRESH_ADAPTER, "UpdateAndMove");
+            this.sendBroadcast(myIntent);
         } else if (CMDPREVIOUS.equals(command) || PREVIOUS_ACTION.equals(action)
                 || PREVIOUS_FORCE_ACTION.equals(action)) {
             prev(PREVIOUS_FORCE_ACTION.equals(action));
+
+            Intent myIntent = new Intent("android.intent.action.MAIN");
+            myIntent.putExtra(REFRESH_ADAPTER, "UpdateAndMove");
+            this.sendBroadcast(myIntent);
         } else if (CMDTOGGLEPAUSE.equals(command) || TOGGLEPAUSE_ACTION.equals(action)) {
             if (isPlaying()) {
                 pause();
@@ -554,6 +562,10 @@ public class MusicService extends Service {
                 play();
                 // BURAYI DUZELTECEGİM.
             }
+
+            Intent myIntent = new Intent("android.intent.action.MAIN");
+            myIntent.putExtra(REFRESH_ADAPTER, "Update");
+            this.sendBroadcast(myIntent);
         } else if (CMDPAUSE.equals(command) || PAUSE_ACTION.equals(action)) {
             pause();
             mPausedByTransientLossOfFocus = false;

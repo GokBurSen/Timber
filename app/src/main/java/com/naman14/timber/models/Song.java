@@ -22,7 +22,7 @@ public class Song {
     public final String artistName;
     public final int duration;
     public final long id;
-    public final String title;
+    public String title;
     public final int trackNumber;
 
     public Song() {

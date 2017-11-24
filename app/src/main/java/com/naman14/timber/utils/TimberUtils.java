@@ -38,6 +38,9 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.naman14.timber.MusicPlayer;
 import com.naman14.timber.R;
+import com.naman14.timber.adapters.SongsListAdapter;
+import com.naman14.timber.dataloaders.SongLoader;
+import com.naman14.timber.fragments.PlaylistFragment;
 import com.naman14.timber.models.Song;
 import com.naman14.timber.provider.RecentStore;
 import com.naman14.timber.provider.SongPlayCount;
@@ -247,6 +250,39 @@ public class TimberUtils {
 
 
     }
+
+    public static void showChangeNameDialog(final Context context, final String name, final RecyclerView.Adapter adapter, final int pos) {
+        new MaterialDialog.Builder(context)
+                .title("Change name?")
+                .content("Are you sure you want to change name of song " + name + " ?")
+                .negativeText("Cancel")
+                .input("Enter new song name", "", false, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+
+
+                            String newName = input.toString();
+                            SongsListAdapter.getArrayList().get(pos).title=newName;
+                            adapter.notifyItemChanged(pos);
+
+
+
+
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+
+
+
+    }
+
+
+
 
 
     public static void deleteAll(final Context context, final List<Song> arraylist){

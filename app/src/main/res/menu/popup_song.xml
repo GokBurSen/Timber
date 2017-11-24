@@ -43,4 +43,8 @@
         android:id="@+id/popup_song_delete_all"
         android:title="Delete all" />
 
+    <item
+        android:id="@+id/popup_song_change_name"
+        android:title="Change name" />
+
 </menu>

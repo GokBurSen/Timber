@@ -14,6 +14,7 @@
 
 package com.naman14.timber.adapters;
 
+
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -28,10 +29,12 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+
 import com.afollestad.appthemeengine.Config;
 import com.naman14.timber.MusicPlayer;
 import com.naman14.timber.R;
 import com.naman14.timber.dialogs.AddPlaylistDialog;
+
 import com.naman14.timber.models.Song;
 import com.naman14.timber.utils.Helpers;
 import com.naman14.timber.utils.NavigationUtils;
@@ -47,7 +50,7 @@ import java.util.List;
 public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.ItemHolder> implements BubbleTextGetter {
 
     public int currentlyPlayingPosition;
-    private List<Song> arraylist;
+    private static List<Song> arraylist;
     private AppCompatActivity mContext;
     private long[] songIDs;
     private boolean isPlaylist;
@@ -177,6 +180,11 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
 
                                     TimberUtils.deleteAll(mContext,arraylist);
                                 break;
+                            case R.id.popup_song_change_name:
+                                TimberUtils.showChangeNameDialog(mContext,arraylist.get(position).title, SongsListAdapter.this, position);
+                                break;
+
+
                         }
                         return false;
                     }
@@ -187,6 +195,10 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Item
                     menu.getMenu().findItem(R.id.popup_song_remove_playlist).setVisible(true);
             }
         });
+    }
+
+    public static List<Song> getArrayList(){
+        return arraylist;
     }
 
     public long[] getSongIds() {
